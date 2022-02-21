@@ -1,0 +1,25 @@
+{
+  "name": "playkids/playkids-heimdall-sso-sdk",
+  "description": "SDK for Heimdall SSO Interface integration",
+  "type": "library",
+  "authors": [{
+    "name": "guilherme-palermo-playkids",
+    "email": "guilherme.palermo@playkids.com"
+  }],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.3.3",
+    "psr/http-message": "^1.0",
+    "tymon/jwt-auth": "dev-develop"
+  },
+  "require-dev": {
+    "vlucas/phpdotenv": "3.3.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Heimdall\\": "src/heimdall"
+    }
+  }
+}
