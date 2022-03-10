@@ -4,13 +4,30 @@ error_reporting(E_ALL);
 
 require "vendor/autoload.php";
 
-use Heimdall\Object\Heimdall;
 use Heimdall\Service\HeimdallService;
 
 $dotenv = Dotenv\Dotenv::create(__DIR__);
-$dotenv->load();
+$env = $dotenv->safeLoad();
 
-$heimdallService = new HeimdallService();
-$heimdallService->setClient(new Heimdall());
+$heimdallAccessToken = "";
+$heimdallExampleRole = "pcp-manager";
+$heimdallApplicationClient = getenv('HEIMDALL_APP_CLIENT');
 
-echo $heimdallService->getClient() instanceof Heimdall;
+$heimdallService = new HeimdallService($heimdallApplicationClient);
+$heimdallService->setAccessToken($heimdallAccessToken);
+
+try {
+
+    echo print_r($heimdallService->decodeAccessToken(), true) . PHP_EOL;
+
+    echo print_r($heimdallService->isValidAccessToken(), true) . PHP_EOL;
+
+    echo print_r($heimdallService->accessTokenHasRole($heimdallExampleRole), true) . PHP_EOL;
+
+    echo print_r($heimdallService->getRoles($heimdallService->decodeAccessToken()), true) . PHP_EOL;
+
+} catch (Exception $exception) {
+
+    echo $exception->getMessage() . PHP_EOL;
+
+}
