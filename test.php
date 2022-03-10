@@ -10,7 +10,8 @@ $dotenv = Dotenv\Dotenv::create(__DIR__);
 $env = $dotenv->safeLoad();
 
 $heimdallAccessToken = "";
-$heimdallApplicationClient = "leiturinha-store";
+$heimdallExampleRole = "pcp-manager";
+$heimdallApplicationClient = getenv('HEIMDALL_APP_CLIENT');
 
 $heimdallService = new HeimdallService($heimdallApplicationClient);
 $heimdallService->setAccessToken($heimdallAccessToken);
@@ -21,7 +22,7 @@ try {
 
     echo print_r($heimdallService->isValidAccessToken(), true) . PHP_EOL;
 
-    echo print_r($heimdallService->accessTokenHasRole('pcp-manager'), true) . PHP_EOL;
+    echo print_r($heimdallService->accessTokenHasRole($heimdallExampleRole), true) . PHP_EOL;
 
     echo print_r($heimdallService->getRoles($heimdallService->decodeAccessToken()), true) . PHP_EOL;
 
