@@ -5,6 +5,7 @@ namespace Heimdall\Service;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use GuzzleHttp\Client;
 use Heimdall\Object\Heimdall;
 use stdClass;
 
@@ -80,7 +81,7 @@ class HeimdallService
     public function decodeAccessToken(string $algorithm = "RS256")
     {
         $key = "-----BEGIN PUBLIC KEY-----" . PHP_EOL .
-            getenv('KEYCLOAK_REALM_PUBLIC_KEY') . PHP_EOL .
+            getenv('HEIMDALL_PUBLIC_KEY') . PHP_EOL .
             "-----END PUBLIC KEY-----";
 
         return JWT::decode($this->ACCESS_TOKEN, new Key($key, $algorithm));
@@ -119,5 +120,55 @@ class HeimdallService
         }
 
         return $roles;
+    }
+
+    public function request(
+        string $service,
+        array $data = null,
+        string $method = 'GET',
+        array $options = null
+    )
+    {
+        $client = new Client();
+
+        $uri = getenv('HEIMDALL_API_URI') . $service;
+
+        $response = $client->request($method, $uri, $options??[
+                'headers' => ['Authorization' => "Bearer " . $this->ACCESS_TOKEN, 'Content-Type' => 'application/json'],
+                'http_errors' => false,
+                'body' => isset($data) ? json_encode($data) : null
+            ]);
+
+        if ($response->getStatusCode() !== 500) {
+            return json_decode($response->getBody()->getContents());
+        }
+
+        throw new Exception($response->getBody()->getContents() ?? 'Error on send request to SSO Interface', $response->getStatusCode() ?? 500);
+    }
+
+    /**
+     * @param array $loginData
+     * @return mixed|string
+     * @throws Exception
+     */
+    public function attemptUserLogin(array $loginData)
+    {
+        $data = [
+            'username' => $loginData['username'],
+            'password' => $loginData['password'],
+            'project'  => $this->CLIENT_ID
+        ];
+
+        $loginResponse = $this->request('auth/login', $loginData, 'POST', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'http_errors' => false,
+            'body' => isset($data) ? json_encode($data) : null
+        ]);
+
+        if(!isset($loginResponse->status) || $loginResponse->status != 200) {
+            throw new Exception($loginResponse->error ?? 'Attempt Login Error', $loginResponse->status ?? 500);
+        }
+
+        return $loginResponse->body??"";
     }
 }

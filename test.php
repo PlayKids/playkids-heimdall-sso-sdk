@@ -14,9 +14,15 @@ $heimdallExampleRole = "pcp-manager";
 $heimdallApplicationClient = getenv('HEIMDALL_APP_CLIENT');
 
 $heimdallService = new HeimdallService($heimdallApplicationClient);
-$heimdallService->setAccessToken($heimdallAccessToken);
 
 try {
+
+    $loginResponse = $heimdallService->attemptUserLogin([
+        'username' => '',
+        'password' => '',
+    ]);
+
+    $heimdallService->setAccessToken($loginResponse->access_token);
 
     echo print_r($heimdallService->decodeAccessToken(), true) . PHP_EOL;
 
