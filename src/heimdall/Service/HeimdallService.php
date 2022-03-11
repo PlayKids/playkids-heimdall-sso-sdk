@@ -77,11 +77,18 @@ class HeimdallService
     /**
      * @param string $algorithm
      * @return object
+     * @throws Exception
      */
     public function decodeAccessToken(string $algorithm = "RS256")
     {
+        $heimdallPublicKey = getenv('HEIMDALL_PUBLIC_KEY');
+
+        if(empty($heimdallPublicKey)){
+            $heimdallPublicKey = $this->getPublicHeimdallKey();
+        }
+
         $key = "-----BEGIN PUBLIC KEY-----" . PHP_EOL .
-            getenv('HEIMDALL_PUBLIC_KEY') . PHP_EOL .
+            $heimdallPublicKey . PHP_EOL .
             "-----END PUBLIC KEY-----";
 
         return JWT::decode($this->ACCESS_TOKEN, new Key($key, $algorithm));
@@ -170,5 +177,19 @@ class HeimdallService
         }
 
         return $loginResponse->body??"";
+    }
+
+    private function getPublicHeimdallKey()
+    {
+        $response = $this->request('config/public_key/project/' . $this->CLIENT_ID, null, 'GET', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'http_errors' => false
+        ]);
+
+        if(!isset($response->status) || $response->status != 200) {
+            throw new Exception($response->error ?? 'Attempt Login Error', $response->status ?? 500);
+        }
+
+        return $response->body->public_key??"";
     }
 }
