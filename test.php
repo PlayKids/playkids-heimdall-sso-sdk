@@ -9,7 +9,6 @@ use Heimdall\Service\HeimdallService;
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $env = $dotenv->safeLoad();
 
-$heimdallAccessToken = "";
 $heimdallExampleRole = "pcp-manager";
 $heimdallApplicationClient = getenv('HEIMDALL_APP_CLIENT');
 

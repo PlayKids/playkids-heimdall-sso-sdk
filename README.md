@@ -19,14 +19,21 @@ Now run **composer update playkids/playkids-heimdall-sso-sdk**
 ## Usage classes 
 
 ```php
-use Heimdall\Object\Heimdall;
 use Heimdall\Service\HeimdallService;
 
-$heimdallAccessToken = "";
 $heimdallApplicationClient = getenv('HEIMDALL_APP_CLIENT');
-
 $heimdallService = new HeimdallService($heimdallApplicationClient);
-$heimdallService->setAccessToken($heimdallAccessToken);
+
+try {
+    $loginResponse = $heimdallService->attemptUserLogin([
+        'username' => '',
+        'password' => '',
+    ]);
+
+    $heimdallService->setAccessToken($loginResponse->access_token);
+} catch (Exception $exception) {
+    echo $exception->getMessage() . PHP_EOL;
+}
 
 echo print_r($heimdallService->decodeAccessToken(), true) . PHP_EOL;
 ```
