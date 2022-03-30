@@ -8,7 +8,7 @@
   }],
   "minimum-stability": "stable",
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.1",
     "ext-json": "*",
     "guzzlehttp/guzzle": "^7.0.1",
     "psr/http-message": "^1.0",
@@ -16,7 +16,8 @@
     "firebase/php-jwt": "^6.0"
   },
   "require-dev": {
-    "vlucas/phpdotenv": "3.3.2"
+    "vlucas/phpdotenv": "3.3.2",
+    "illuminate/support": "v8.83.1"
   },
   "autoload": {
     "psr-4": {
