@@ -33,6 +33,8 @@ class AuthenticateHeimdall
                 if(isset($role) && !$heimdallService->accessTokenHasRole($role)) {
                     throw new Exception('Permission denied', 422);
                 }
+
+                $heimdallService->setHeimdallUser();
             }
         } catch (Exception $exception) {
             return response()->json([
