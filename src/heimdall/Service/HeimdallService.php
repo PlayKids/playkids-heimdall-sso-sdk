@@ -6,16 +6,13 @@ use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use GuzzleHttp\Client;
-use Heimdall\Object\Heimdall;
+use Heimdall\Object\HeimdallUser;
+use Illuminate\Support\Facades\Auth;
 use stdClass;
 
 class HeimdallService
 {
 
-    /**
-     * @var Heimdall
-     */
-    private $heimdall;
     private $CLIENT_ID;
     private $ACCESS_TOKEN;
 
@@ -26,18 +23,6 @@ class HeimdallService
     public function __construct(string $project)
     {
         $this->CLIENT_ID = $project;
-    }
-
-    /**
-     * @param Heimdall $heimdall
-     */
-    public function setClient(Heimdall $heimdall) {
-        $this->heimdall = $heimdall;
-    }
-
-    public function getClient()
-    {
-        return $this->heimdall;
     }
 
     public function setAccessToken(string $token)
@@ -191,5 +176,23 @@ class HeimdallService
         }
 
         return $response->body->public_key??"";
+    }
+
+    public function setHeimdallUser()
+    {
+        try {
+            $decodedAccessToken = $this->decodeAccessToken();
+
+            Auth::setUser(new HeimdallUser(
+                $decodedAccessToken->sub,
+                $decodedAccessToken->name,
+                $decodedAccessToken->email,
+                $this->getAccessToken(),
+                $decodedAccessToken->refreshToken,
+                $decodedAccessToken->roles
+            ));
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 }
