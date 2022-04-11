@@ -184,10 +184,10 @@ class HeimdallService
             $decodedAccessToken = $this->decodeAccessToken();
 
             Auth::setUser(new HeimdallUser(
-                $decodedAccessToken->uid,
+                $decodedAccessToken->sub,
                 $decodedAccessToken->name,
                 $decodedAccessToken->email,
-                $decodedAccessToken->accessToken,
+                $this->getAccessToken(),
                 $decodedAccessToken->refreshToken,
                 $decodedAccessToken->roles
             ));
