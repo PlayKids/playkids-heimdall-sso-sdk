@@ -16,6 +16,13 @@ Add to your composer.json:
  
 Now run **composer update playkids/playkids-heimdall-sso-sdk**
 
+In Laravel projects, to use AuthenticateHeimdall (Middleware), this should be registered in the Kernel.php file, like this example:
+```php
+protected $routeMiddleware = [
+    'auth.heimdall' => \Heimdall\Middleware\AuthenticateHeimdall::class
+];
+```
+
 ## Usage classes 
 
 ```php
