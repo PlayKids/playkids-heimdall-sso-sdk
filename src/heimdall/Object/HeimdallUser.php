@@ -3,8 +3,9 @@
 namespace Heimdall\Object;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class HeimdallUser implements Authenticatable
+class HeimdallUser implements Authenticatable, JWTSubject
 {
 
     var $uid;
@@ -58,5 +59,15 @@ class HeimdallUser implements Authenticatable
     public function getRememberTokenName()
     {
         return 'refreshToken';
+    }
+
+    public function getJWTIdentifier()
+    {
+        // TODO: Implement getJWTIdentifier() method.
+    }
+
+    public function getJWTCustomClaims()
+    {
+        // TODO: Implement getJWTCustomClaims() method.
     }
 }
