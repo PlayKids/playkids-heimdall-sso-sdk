@@ -188,8 +188,7 @@ class HeimdallService
                 $decodedAccessToken->name,
                 $decodedAccessToken->email,
                 $this->getAccessToken(),
-                '',
-                $decodedAccessToken->roles
+                ''
             ));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());

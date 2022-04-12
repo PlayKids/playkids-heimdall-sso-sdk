@@ -21,8 +21,7 @@ class HeimdallUser implements Authenticatable, JWTSubject
         string $name,
         string $email,
         string $accessToken,
-        string $refreshToken,
-        array $roles
+        string $refreshToken
     )
     {
         $this->uid = $uid;
@@ -30,7 +29,6 @@ class HeimdallUser implements Authenticatable, JWTSubject
         $this->email = $email;
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
-        $this->roles = $roles;
     }
 
     public function getAuthIdentifierName()
