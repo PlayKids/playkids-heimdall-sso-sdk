@@ -35,6 +35,8 @@ class AuthenticateHeimdall
                 }
 
                 $heimdallService->setHeimdallUser();
+            } else {
+                throw new Exception('Token is missing', 422);
             }
         } catch (Exception $exception) {
             return response()->json([
