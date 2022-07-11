@@ -21,7 +21,9 @@ try {
         'password' => '',
     ]);
 
-    $heimdallService->setAccessToken($loginResponse->access_token);
+    $heimdallService->setAccessToken($loginResponse->accessToken);
+
+    echo print_r($heimdallService->getUserInfo($loginResponse->externalId), true) . PHP_EOL;
 
     echo print_r($heimdallService->decodeAccessToken(), true) . PHP_EOL;
 
