@@ -151,7 +151,13 @@ class HeimdallService
             'project'  => $this->CLIENT_ID
         ];
 
-        $loginResponse = $this->request('auth/login', $loginData, 'POST', [
+        if($this->CLIENT_ID == "leiturinha-admin"){
+            $service = "auth/login/leiturinha-admin";
+        }else{
+            $service = "auth/login";
+        }
+
+        $loginResponse = $this->request($service, $loginData, 'POST', [
             'headers' => ['Content-Type' => 'application/json'],
             'http_errors' => false,
             'body' => isset($data) ? json_encode($data) : null
@@ -209,21 +215,41 @@ class HeimdallService
         try {
             $decodedAccessToken = $this->decodeAccessToken();
 
-            $userInfo = $this->getUserInfo($decodedAccessToken->sub);
+            if($this->CLIENT_ID == "leiturinha-admin"){
 
-            Auth::setUser(new HeimdallUser(
-                $userInfo->id,
-                $userInfo->externalId,
-                $userInfo->email,
-                $userInfo->firstName,
-                $userInfo->lastName,
-                $this->getAccessToken(),
-                $decodedAccessToken->exp,
-                "",
-                0,
-                "",
-                (object)[]
-            ));
+                Auth::setUser(new HeimdallUser(
+                    $decodedAccessToken->user->id,
+                    $decodedAccessToken->user->id,
+                    $decodedAccessToken->user->email,
+                    $decodedAccessToken->user->name,
+                    "",
+                    $this->getAccessToken(),
+                    $decodedAccessToken->exp,
+                    "",
+                    0,
+                    "",
+                    (object)[]
+                ));
+
+            }else{
+                $userInfo = $this->getUserInfo($decodedAccessToken->sub);
+
+                Auth::setUser(new HeimdallUser(
+                    $userInfo->id,
+                    $userInfo->externalId,
+                    $userInfo->email,
+                    $userInfo->firstName,
+                    $userInfo->lastName,
+                    $this->getAccessToken(),
+                    $decodedAccessToken->exp,
+                    "",
+                    0,
+                    "",
+                    (object)[]
+                ));
+            }
+
+
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
