@@ -30,6 +30,9 @@ class AuthenticateHeimdall
                 $heimdallService = new HeimdallService(env("HEIMDALL_PROJECT"));
                 $heimdallService->setAccessToken($token);
 
+                if(!$heimdallService->isValidAccessToken()){
+                    throw new Exception('Permission denied', 422);
+                }
                 if(isset($role) && !$heimdallService->accessTokenHasRole($role)) {
                     throw new Exception('Permission denied', 422);
                 }

@@ -26,27 +26,27 @@ class HeimdallUser implements Authenticatable, JWTSubject
      * @param int $id
      * @param string $externalId
      * @param string $email
-     * @param string $firstName
-     * @param string $lastName
+     * @param ?string $firstName
+     * @param ?string $lastName
      * @param string $accessToken
      * @param int $expiresIn
-     * @param string $refreshToken
-     * @param int $refreshExpiresIn
-     * @param string $idToken
-     * @param object $roles
+     * @param ?string $refreshToken
+     * @param ?int $refreshExpiresIn
+     * @param ?string $idToken
+     * @param ?object $roles
      */
     public function __construct(
         int $id,
         string $externalId,
         string $email,
-        string $firstName,
-        string $lastName,
+        ?string $firstName,
+        ?string $lastName,
         string $accessToken,
         int $expiresIn,
-        string $refreshToken,
-        int $refreshExpiresIn,
-        string $idToken,
-        object $roles
+        ?string $refreshToken,
+        ?int $refreshExpiresIn,
+        ?string $idToken,
+        ?object $roles
     )
     {
         $this->id = $id;
