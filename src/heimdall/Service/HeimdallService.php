@@ -182,6 +182,38 @@ class HeimdallService
         )??"";
     }
 
+    /**
+     * @return HeimdallUser|string
+     * @throws Exception
+     */
+    public function refreshAccessToken()
+    {
+
+        $loginResponse = $this->request("auth/token/refresh/project/".$this->CLIENT_ID, null, 'GET', [
+            'headers' => ['Authorization' => "Bearer " . $this->ACCESS_TOKEN, 'Content-Type' => 'application/json'],
+            'http_errors' => false,
+            'body' => null
+        ]);
+
+        if(!isset($loginResponse->status) || $loginResponse->status != 200) {
+            throw new Exception($loginResponse->error ?? 'Refresh Token Error', $loginResponse->status ?? 500);
+        }
+
+        return new HeimdallUser(
+                $loginResponse->body->id,
+                $loginResponse->body->externalId,
+                $loginResponse->body->email,
+                $loginResponse->body->firstName,
+                $loginResponse->body->lastName,
+                $loginResponse->body->accessToken,
+                $loginResponse->body->expiresIn,
+                $loginResponse->body->refreshToken,
+                $loginResponse->body->refreshExpiresIn,
+                $loginResponse->body->idToken,
+                $loginResponse->body->roles
+            )??"";
+    }
+
     public function getUserInfo(string $externalSSOID) {
         $response = $this->request('auth/user/' . $externalSSOID . '/project/' . $this->CLIENT_ID, null, 'GET', [
             'headers' => ['Authorization' => "Bearer " . $this->ACCESS_TOKEN, 'Content-Type' => 'application/json'],
