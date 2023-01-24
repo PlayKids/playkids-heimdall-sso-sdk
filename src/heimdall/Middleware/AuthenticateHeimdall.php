@@ -31,22 +31,22 @@ class AuthenticateHeimdall
                 $heimdallService->setAccessToken($token);
 
                 if(!$heimdallService->isValidAccessToken()){
-                    throw new Exception('Permission denied', 422);
+                    throw new Exception('Permission denied', 401);
                 }
                 if(isset($role) && !$heimdallService->accessTokenHasRole($role)) {
-                    throw new Exception('Permission denied', 422);
+                    throw new Exception('Permission denied', 401);
                 }
 
                 $heimdallService->setHeimdallUser();
             } else {
-                throw new Exception('Token is missing', 422);
+                throw new Exception('Token is missing', 401);
             }
         } catch (Exception $exception) {
             return response()->json([
                 'code' => $exception->getCode(),
                 'message' => $exception->getMessage(),
                 'status' => 'error'
-            ]);
+            ], 401);
         }
 
         return $next($request);
