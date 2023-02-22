@@ -286,4 +286,41 @@ class HeimdallService
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }
+
+    /**
+     * @param array $loginData
+     * @return HeimdallUser|string
+     * @throws Exception
+     */
+    public function attemptPasswordlessLogin($username)
+    {
+        $data = [
+            'username' => $username,
+            'project'  => $this->CLIENT_ID
+        ];
+
+        $loginResponse = $this->request('auth/passwordless-login/leiturinha-admin', $data, 'POST', [
+            'headers' => ['Authorization' => "Bearer " . getenv("LEITURINHA_APPLICATION_TOKEN"), 'Content-Type' => 'application/json'],
+            'http_errors' => false,
+            'body' => isset($data) ? json_encode($data) : null
+        ]);
+
+        if(!isset($loginResponse->status) || $loginResponse->status != 200) {
+            throw new Exception($loginResponse->error ?? 'Attempt Login Error', $loginResponse->status ?? 500);
+        }
+
+        return new HeimdallUser(
+                $loginResponse->body->id,
+                $loginResponse->body->externalId,
+                $loginResponse->body->email,
+                $loginResponse->body->firstName,
+                $loginResponse->body->lastName,
+                $loginResponse->body->accessToken,
+                $loginResponse->body->expiresIn,
+                $loginResponse->body->refreshToken,
+                $loginResponse->body->refreshExpiresIn,
+                $loginResponse->body->idToken,
+                $loginResponse->body->roles
+            )??"";
+    }
 }
