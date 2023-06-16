@@ -34,6 +34,10 @@ class HeimdallService
     {
         return $this->ACCESS_TOKEN;
     }
+    public function setProject(string $project)
+    {
+        $this->CLIENT_ID = $project;
+    }
 
     /**
      * @param string $algorithm
@@ -66,7 +70,11 @@ class HeimdallService
      */
     public function decodeAccessToken(string $algorithm = "RS256")
     {
-        $heimdallPublicKey = getenv('HEIMDALL_PUBLIC_KEY');
+        $heimdallPublicKey = getenv($this->getPublicKeyConfigName($this->CLIENT_ID));
+
+        if(empty($heimdallPublicKey)){
+            $heimdallPublicKey = getenv("HEIMDALL_PUBLIC_KEY");
+        }
 
         if(empty($heimdallPublicKey)){
             $heimdallPublicKey = $this->getPublicHeimdallKey();
@@ -153,6 +161,8 @@ class HeimdallService
 
         if($this->CLIENT_ID == "leiturinha-admin"){
             $service = "auth/login/leiturinha-admin";
+        }elseif($this->CLIENT_ID == "tbx"){
+            $service = "auth/login/tbx";
         }else{
             $service = "auth/login";
         }
@@ -179,7 +189,7 @@ class HeimdallService
                 $loginResponse->body->refreshExpiresIn,
                 $loginResponse->body->idToken,
                 $loginResponse->body->roles
-        )??"";
+            )??"";
     }
 
     /**
@@ -322,5 +332,12 @@ class HeimdallService
                 $loginResponse->body->idToken,
                 $loginResponse->body->roles
             )??"";
+    }
+
+    protected function getPublicKeyConfigName(string $project){
+        $project = str_replace('-', '_', $project);
+        $project = str_replace('.', '_', $project);
+        $project = str_replace(' ', '_', $project);
+        return strtoupper("HEIMDALL_PUBLIC_KEY_{$project}");
     }
 }

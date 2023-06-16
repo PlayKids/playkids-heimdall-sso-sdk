@@ -20,15 +20,23 @@ class AuthenticateHeimdall
         return (!$request->expectsJson()) ? '/error' : null;
     }
 
-    public function handle($request, Closure $next, string $role = null)
+    public function handle($request, Closure $next, string $role = null, string $project = null)
     {
         try {
             $token = request()->bearerToken();
 
             if(isset($token)) {
 
-                $heimdallService = new HeimdallService(env("HEIMDALL_PROJECT"));
+                if(empty($project)){
+                    $project = env("HEIMDALL_PROJECT");
+                }
+
+                $heimdallService = new HeimdallService($project);
                 $heimdallService->setAccessToken($token);
+
+                if(!empty($request->heimdall_project)){
+                    $heimdallService->setProject($request->heimdall_project);
+                }
 
                 if(!$heimdallService->isValidAccessToken()){
                     throw new Exception('Permission denied', 401);
