@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * @property integer id
+ * @property string id
  * @property string externalId
  * @property string email
  * @property string firstName
@@ -23,7 +23,7 @@ class HeimdallUser implements Authenticatable, JWTSubject
 
     /**
      * HeimdallUser constructor.
-     * @param int $id
+     * @param string $id
      * @param string $externalId
      * @param string $email
      * @param ?string $firstName
@@ -36,7 +36,7 @@ class HeimdallUser implements Authenticatable, JWTSubject
      * @param ?object $roles
      */
     public function __construct(
-        int $id,
+        string $id,
         string $externalId,
         string $email,
         ?string $firstName,
