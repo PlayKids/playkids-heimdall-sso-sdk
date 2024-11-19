@@ -163,6 +163,8 @@ class HeimdallService
             $service = "auth/login/leiturinha-admin";
         }elseif($this->CLIENT_ID == "tbx"){
             $service = "auth/login/tbx";
+        }elseif($this->CLIENT_ID == "playkids-plus"){
+            $service = "auth/login/playkids-plus";
         }else{
             $service = "auth/login";
         }
